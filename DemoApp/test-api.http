@@ -1,0 +1,40 @@
+### Test API Tra cứu thông tin doanh nghiệp
+
+### 1. Test tra cứu doanh nghiệp thành công
+POST https://localhost:7000/api/tax/lookup
+Content-Type: application/json
+
+{
+  "maSoThue": "0123456789",
+  "captcha": "123456"
+}
+
+### 2. Test tra cứu doanh nghiệp không tồn tại
+POST https://localhost:7000/api/tax/lookup
+Content-Type: application/json
+
+{
+  "maSoThue": "9999999999",
+  "captcha": "123456"
+}
+
+### 3. Test captcha sai
+POST https://localhost:7000/api/tax/lookup
+Content-Type: application/json
+
+{
+  "maSoThue": "0123456789",
+  "captcha": "wrong"
+}
+
+### 4. Test lấy tất cả doanh nghiệp
+GET https://localhost:7000/api/tax/all
+
+### 5. Test tra cứu doanh nghiệp khác
+POST https://localhost:7000/api/tax/lookup
+Content-Type: application/json
+
+{
+  "maSoThue": "0987654321",
+  "captcha": "123456"
+}
