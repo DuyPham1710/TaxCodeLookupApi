@@ -5,7 +5,7 @@ namespace DemoApp.Service
     public class CaptchaService
     {
         private static readonly string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        private static string? _currentCaptcha;
+        public static string? _currentCaptcha;
 
         public static string GenerateCaptcha(int length = 5)
         {

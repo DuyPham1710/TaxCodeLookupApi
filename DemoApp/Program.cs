@@ -29,11 +29,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Tự động tạo database nếu chưa tồn tại
+// Tự động apply migration và tạo bảng nếu chưa có
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    context.Database.EnsureCreated();
+    context.Database.Migrate();
 }
 
 app.Run();

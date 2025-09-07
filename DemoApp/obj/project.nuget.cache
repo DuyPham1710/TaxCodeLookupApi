@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "nRTZ45760rspJKxbNixaoN3Z22sV1z0nw0VrmNi5JD8A4jvfZe937NLFDonQBbPYs13LZwn3YLudfsMK3vk8fg==",
+  "dgSpecHash": "N6CmuWE8D1oATLi13MUJgNqQRi5EOmLTKpYi4yazkqNkeDAY4xgYnqoHntJxePqUBgWTICppP2Tf/nxAcr3RQQ==",
   "success": true,
   "projectFilePath": "D:\\CODE\\C#\\DemoApp\\DemoApp\\DemoApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Duy\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\Duy\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
+    "C:\\Users\\Duy\\.nuget\\packages\\htmlagilitypack\\1.12.2\\htmlagilitypack.1.12.2.nupkg.sha512",
     "C:\\Users\\Duy\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Duy\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.11\\microsoft.aspnetcore.openapi.7.0.11.nupkg.sha512",
     "C:\\Users\\Duy\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",

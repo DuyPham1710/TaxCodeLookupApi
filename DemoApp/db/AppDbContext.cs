@@ -10,7 +10,7 @@ namespace DemoApp.db
         }
 
         public DbSet<Enterprise> Enterprises { get; set; }
-
+        public DbSet<CompanyInfo> CompanyInfos { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -18,6 +18,10 @@ namespace DemoApp.db
             // Tạo index cho TaxCode để tìm kiếm nhanh hơn
             modelBuilder.Entity<Enterprise>()
                 .HasIndex(e => e.TaxCode)
+                .IsUnique();
+
+            modelBuilder.Entity<CompanyInfo>()
+                .HasIndex(c => c.TaxID)
                 .IsUnique();
 
             modelBuilder.Entity<Enterprise>().HasData(
