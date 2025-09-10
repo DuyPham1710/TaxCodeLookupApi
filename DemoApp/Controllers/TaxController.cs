@@ -5,6 +5,7 @@ using DemoApp.dto;
 using DemoApp.entities;
 using DemoApp.Service;
 using System.Net;
+using DemoApp.Constants;
 
 namespace DemoApp.Controllers
 {
@@ -13,7 +14,7 @@ namespace DemoApp.Controllers
     public class TaxController : ControllerBase
     {
         private readonly AppDbContext _context;
-     //   private static readonly Dictionary<string, CookieContainer> _sessions = new();
+        private static readonly Dictionary<string, CookieContainer> _sessions = new();
         public TaxController(AppDbContext context)
         {
             _context = context;
@@ -68,17 +69,22 @@ namespace DemoApp.Controllers
                     });
                 }
 
-                if (!CaptchaService.ValidateCaptcha(request.Captcha))
-                {
-                    return BadRequest(new EnterpriseResponse
-                    {
-                        Success = false,
-                        Message = "Captcha không đúng",
-                        Data = null
-                    });
-                }
+                //if (!CaptchaService.ValidateCaptcha(request.Captcha))
+                //{
+                //    return BadRequest(new EnterpriseResponse
+                //    {
+                //        Success = false,
+                //        Message = "Captcha không đúng",
+                //        Data = null
+                //    });
+                //}
+                if (!Request.Headers.TryGetValue("X-Session-Id", out var sessionId))
+                    return BadRequest(new { success = false, message = "Thiếu X-Session-Id trong header" });
 
-                var companyInfo = await CompanyService.GetCompanyInfo(request.MaSoThue);
+                if (!_sessions.TryGetValue(sessionId!, out var cookies))
+                    return BadRequest(new { success = false, message = "Session không hợp lệ" });
+
+                var companyInfo = await CompanyService.GetCompanyInfo(request.MaSoThue, request.Captcha, cookies);
 
                 if (companyInfo == null)
                 {
@@ -111,7 +117,7 @@ namespace DemoApp.Controllers
                         MainIndustry = companyInfo.MainIndustry
                     }
                 };
-                CaptchaService._currentCaptcha = null; // reset captcha after each request
+               // CaptchaService._currentCaptcha = null; // reset captcha after each request
                 return Ok(response);
             }
             catch (Exception ex)
@@ -195,23 +201,44 @@ namespace DemoApp.Controllers
         }
 
         [HttpGet("captcha")]
-        public IActionResult GetCaptcha()
+        public async Task<IActionResult> GetCaptchaAsync()
         {
-            var captcha = CaptchaService.GenerateCaptcha();
-            return Ok(new { captcha });
-            //var cookieContainer = new CookieContainer();
-            //var handler = new HttpClientHandler { CookieContainer = cookieContainer };
-            //using var client = new HttpClient(handler);
+          
+            var cookieContainer = new CookieContainer();
+            var handler = new HttpClientHandler { CookieContainer = cookieContainer };
+            using var client = new HttpClient(handler);
 
-            //var captchaUrl = "https://tracuunnt.gdt.gov.vn/tcnnt/captcha.png?uid=" + Guid.NewGuid();
-            //var imgBytes = await client.GetByteArrayAsync(captchaUrl);
+            var captchaUrl = $"{GlConstants.BASE_URL}/captcha.png?uid=" + Guid.NewGuid();
+            var imgBytes = await client.GetByteArrayAsync(captchaUrl);
 
-            //var sessionId = Guid.NewGuid().ToString();
-            //_sessions[sessionId] = cookieContainer;
+            var sessionId = Guid.NewGuid().ToString();
+            _sessions[sessionId] = cookieContainer;
 
-            //Response.Headers["X-Session-Id"] = sessionId;
-            //return File(imgBytes, "image/png");
+            Response.Headers["X-Session-Id"] = sessionId;
+            return File(imgBytes, "image/png");
+           
         }
+
+        //[HttpGet("captcha-with-session")]
+        //public async Task<IActionResult> GetCaptchaWithSessionAsync()
+        //{
+        //    var cookieContainer = new CookieContainer();
+        //    var handler = new HttpClientHandler { CookieContainer = cookieContainer };
+        //    using var client = new HttpClient(handler);
+
+        //    var captchaUrl = "https://tracuunnt.gdt.gov.vn/tcnnt/captcha.png?uid=" + Guid.NewGuid();
+        //    var imgBytes = await client.GetByteArrayAsync(captchaUrl);
+
+        //    var sessionId = Guid.NewGuid().ToString();
+        //    _sessions[sessionId] = cookieContainer;
+
+        //    Response.Headers["X-Session-Id"] = sessionId;
+        //    return Ok(new
+        //    {
+        //        sessionId,
+        //        captchaImage = Convert.ToBase64String(imgBytes)
+        //    });
+        //}
 
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<EnterpriseData>>> GetAllEnterprises()
